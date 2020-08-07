@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import "./App.css";
 import Products from "./components/products";
-// import data from "./data/products.json";
 import axios from "axios";
 
 class App extends Component {
   state = {
     products: {},
     isLoaded: false,
+    error: "",
   };
 
   componentDidMount = () => {
@@ -18,8 +18,6 @@ class App extends Component {
     };
     axios(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
-
         let sortedProducts = Object.entries(response.data.products).sort(
           (a, b) => {
             return b[1].popularity - a[1].popularity;
@@ -31,14 +29,20 @@ class App extends Component {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        this.setState({
+          error: error,
+        });
       });
   };
 
   render() {
     return (
       <div className="App">
-        <Products products={this.state.products} />
+        {this.state.products ? (
+          <Products products={this.state.products} />
+        ) : (
+          this.state.error
+        )}
       </div>
     );
   }
