@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import Products from "./components/products";
-import data from "./data/products.json";
+// import data from "./data/products.json";
 import axios from "axios";
 
 class App extends Component {
@@ -17,20 +17,22 @@ class App extends Component {
       headers: {},
     };
     axios(config)
-      .then(function (response) {
+      .then((response) => {
         console.log(JSON.stringify(response.data));
+
+        let sortedProducts = Object.entries(response.data.products).sort(
+          (a, b) => {
+            return b[1].popularity - a[1].popularity;
+          }
+        );
+
+        this.setState({
+          products: sortedProducts,
+        });
       })
       .catch(function (error) {
         console.log(error);
       });
-
-    let sortedProducts = Object.entries(data.products).sort((a, b) => {
-      return b[1].popularity - a[1].popularity;
-    });
-
-    this.setState({
-      products: sortedProducts,
-    });
   };
 
   render() {
